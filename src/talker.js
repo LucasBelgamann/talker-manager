@@ -12,6 +12,13 @@ const readFile = async () => {
     }
   };
 
+  const getById = async (id) => {
+  const json = await readFile();
+  return json
+    .filter((talke) => talke.id === id);
+  };
+
 module.exports = {
     readFile,
+    getById,
 };
