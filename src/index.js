@@ -36,6 +36,12 @@ app.post('/login', validationLogin, async (req, res) => {
   res.status(200).json({ email, password, token });
 });
 
+app.post('/talker', async (req, res) => {
+  const person = talker.createNewPerson({ id: Number(talker.length) + 1, ...req.body });
+
+  res.status(201).json({ person });
+});
+
 app.listen(PORT, () => {
   console.log('Online');
 });
