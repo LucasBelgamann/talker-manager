@@ -18,6 +18,7 @@ app.get('/talker', async (_req, res) => {
   res.status(200).json(json);
 });
 
+// const regexValidation = /\S+@\w+.\w+/i;
 app.get('/talker/:id', async (req, res) => {
   const { id } = req.params;
   const person = await talker.getById(Number(id));
@@ -25,6 +26,13 @@ app.get('/talker/:id', async (req, res) => {
     return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
   }
   return res.status(200).json(person[0]);
+});
+
+app.post('/login', async (req, res) => {
+  const { email } = req.body;
+  const { password } = req.body;
+  const token = talker.generateToken();
+  res.status(200).json({ email, password, token });
 });
 
 app.listen(PORT, () => {
