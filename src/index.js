@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const { join } = require('path');
 const fs = require('fs').promises;
 
 const talkerJson = './talker.json';
@@ -16,11 +17,13 @@ app.get('/', (_request, response) => {
 });
 
 app.get('/talker', async (_req, res) => {
-  const talker = JSON.parse(await fs.readFile(talkerJson));
-  if (talker.length === 0) {
-    return res.status(200).json(talker);
-  } 
-    return res.status(200).json([]);
+  const talker = await fs.readFile(join(__dirname, talkerJson), 'utf-8');
+  try {
+    const json = JSON.parse(talker);
+    return res.status(200).json(json);
+  } catch (error) {
+    return [];
+  }
 });
 
 app.listen(PORT, () => {
