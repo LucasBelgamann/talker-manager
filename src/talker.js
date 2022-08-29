@@ -27,18 +27,9 @@ const readFile = async () => {
     return crypto.randomBytes(8).toString('hex');
   }
 
-  const createNewPerson = async (id, req) => {
-    const talker = await readFile();
-    const newPerson = { id, req };
-    talker.push(newPerson);
-    await writeTalkerTrybeFile(talker);
-
-    return newPerson;
-  };
-
 module.exports = {
     readFile,
     getById,
     generateToken,
-    createNewPerson,
+    writeTalkerTrybeFile,
 };

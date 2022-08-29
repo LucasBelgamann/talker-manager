@@ -3,6 +3,14 @@ const bodyParser = require('body-parser');
 const talker = require('./talker');
 
 const validationLogin = require('./middlewares/login');
+const {
+  validateName,
+  validateAge,
+  validateTalk,
+  validateRate,
+  validateWatchedAt,
+  validateToken,
+} = require('./middlewares/middlewareName');
 
 const app = express();
 app.use(bodyParser.json());
@@ -24,7 +32,9 @@ app.get('/talker/:id', async (req, res) => {
   const { id } = req.params;
   const person = await talker.getById(Number(id));
   if (person.length === 0) {
-    return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+    return res
+      .status(404)
+      .json({ message: 'Pessoa palestrante não encontrada' });
   }
   return res.status(200).json(person[0]);
 });
@@ -36,11 +46,26 @@ app.post('/login', validationLogin, async (req, res) => {
   res.status(200).json({ email, password, token });
 });
 
-app.post('/talker', async (req, res) => {
-  const person = talker.createNewPerson({ id: Number(talker.length) + 1, ...req.body });
-
-  res.status(201).json({ person });
-});
+app.post(
+  '/talker',
+  validateToken,
+  validateName,
+  validateAge,
+  validateTalk,
+  validateRate,
+  validateWatchedAt,
+  async (req, res) => {
+    try {
+      const file = await talker.readFile();
+      const person = { id: file.length + 1, ...req.body };
+      file.push(person);
+      await talker.writeTalkerTrybeFile(file);
+      return res.status(201).json(person);
+    } catch (error) {
+      return null;
+    }
+  },
+);
 
 app.listen(PORT, () => {
   console.log('Online');
