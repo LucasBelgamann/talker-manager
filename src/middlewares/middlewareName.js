@@ -42,7 +42,7 @@ const validateRate = (req, res, next) => {
     talk: { rate },
   } = req.body;
 
-  if (!rate || typeof rate !== 'number') {
+  if (rate === null || typeof rate !== 'number') {
     return res.status(400).json({ message: 'O campo "rate" é obrigatório' });
   }
 

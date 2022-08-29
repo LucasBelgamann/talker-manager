@@ -67,6 +67,25 @@ app.post(
   },
 );
 
+app.put(
+  '/talker/:id',
+  validateToken,
+  validateName,
+  validateAge,
+  validateTalk,
+  validateWatchedAt,
+  validateRate,
+  async (req, res) => {
+    const file = await talker.readFile();
+    const id = Number(req.params.id);
+
+    const updateTalkker = { id, ...req.body };
+    file[id] = updateTalkker;
+    await talker.writeTalkerTrybeFile(file);
+    return res.status(200).json(file[id]);
+  },
+);
+
 app.listen(PORT, () => {
   console.log('Online');
 });
