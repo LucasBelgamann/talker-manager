@@ -86,6 +86,20 @@ app.put(
   },
 );
 
+app.delete(
+  '/talker/:id',
+  validateToken,
+  async (req, res) => {
+    const file = await talker.readFile();
+    const id = Number(req.params.id);
+
+    const deleteUser = file.find((u) => u.id === id);
+
+    await talker.writeTalkerTrybeFile(deleteUser);
+    return res.status(204).json();
+  },
+);
+
 app.listen(PORT, () => {
   console.log('Online');
 });
